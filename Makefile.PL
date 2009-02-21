@@ -8,8 +8,9 @@ WriteMakefile
           'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/Test/XML/Deep.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0,
                            'XML::Simple' => '2.18',
+                           'Test::Simple' => '0.86',
+                           'XML::Parser' => '2.36',
                            'Test::Deep' => 0
                          }
         )

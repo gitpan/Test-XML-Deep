@@ -9,10 +9,11 @@ my $builder = Module::Build->new(
     dist_abstract       => 'XML::Simple + Test::Deep = Test::XML::Deep',
     dist_version_from   => 'lib/Test/XML/Deep.pm',
     build_requires => {
-        'Test::More' => 0,
+        'Test::Simple' => 0.86,
     },
     requires => {
         'perl'        => 5.006,
+        'XML::Parser' => 2.36,
         'XML::Simple' => 2.18,
         'Test::Deep'  => 0,
     },
