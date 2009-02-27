@@ -1,9 +1,10 @@
 #!perl -T
 
-use Test::More tests => 3;
-use XML::Simple;
-use Data::Dumper;
+use strict;
+use warnings;
+use Test::More tests => 4;
 use Test::Deep;
+use Test::NoWarnings;
 
 BEGIN {
 	use_ok( 'Test::XML::Deep' );
@@ -19,14 +20,12 @@ BEGIN {
 </example>
 EOXML
 
-    my $expected = { 'sometag' => [
-                                   {
-                                     'attribute' => 'value',
-                                     'content' => 'some data'
+    my $expected = { 'sometag' => [ {
+                                     attribute => 'value',
+                                     content   => 'some data'
                                    },
-                                   {
-                                     'attribute' => 'other',
-                                     'content' => 'more data'
+                                   { attribute => 'other',
+                                     content   => 'more data'
                                    }
                                  ]
                    };
@@ -44,8 +43,8 @@ EOXML
 </example>
 EOXML
 
-    my $expected = { 'sometag' => array_each( { 'attribute' => re('^\d+$'),
-                                                'content' => re('data$'),
+    my $expected = { 'sometag' => array_each( { attribute => re('^\d+$'),
+                                                content   => re('data$'),
                                                }
                                   )
                    };

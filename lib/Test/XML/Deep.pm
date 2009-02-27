@@ -3,10 +3,11 @@ package Test::XML::Deep;
 use warnings;
 use strict;
 
+use Exporter;
 use XML::Parser;
 use XML::Simple;
-use Test::Deep;
-use Exporter;
+use Sub::Uplevel qw/uplevel/;
+use Test::Deep qw/deep_diag/;
 
 my $Test = Test::Builder->new;
 
@@ -20,11 +21,11 @@ Test::XML::Deep = XML::Simple + Test::Deep
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 
 =head1 SYNOPSIS
@@ -46,41 +47,30 @@ An Example:
     </example>
     EOXML
 
-    my $expected = { 'sometag' => [
-                                   {
-                                     'attribute' => 'value',
-                                     'content' => 'some data'
-                                   },
-                                   {
-                                     'attribute' => 'other',
-                                     'content' => 'more data'
-                                   }
-                                 ]
+    my $expected = { sometag => [ { attribute => 'value',
+                                    content   => 'some data'
+                                 },
+                               ]
                    };
 
     cmp_xml_deeply($xml, $expected);
 
 
-Or, you can use Test::Deep and make use of the functions it exports (I.E. array_each(), re()):
+The real power comes from using Test::Deep and making use of the functions it exports (I.E. array_each(), re()):
 
     use Test::Deep;
-    use Test::XML::Deep;
 
-    my $xml = <<EOXML;
-    <?xml version="1.0" encoding="UTF-8"?>
-    <example>
-        <sometag attribute="1234">some data</sometag>
-        <sometag attribute="4321">more data</sometag>
-    </example>
-    EOXML
-
-    my $expected = { 'sometag' => array_each( { 'attribute' => re('^\d+$'),
-                                                'content' => re('data$'),
-                                               }
-                                  )
+    my $expected = { sometag => array_each( { attribute => re('^\w+$'),
+                                              content   => re('data$'),
+                                             }
+                                )
                    };
 
     cmp_xml_deeply($xml, $expected);
+
+You can also pass in a filename:
+
+    cmp_xml_deeply('somefile.xml', { my_expected => 'data_structure' });
 
 
 =head1 EXPORT
@@ -89,28 +79,40 @@ cmp_xml_deeply
 
 =head1 FUNCTIONS
 
-=head2 cmp_xml_deeply
+=head2 cmp_xml_deeply( $xml, $hashref_expected, [ 'test name' ] );
 
 =cut
 
 sub cmp_xml_deeply {
     my ( $xml, $expected, $name ) = @_;
 
+    my $parse_method = 'parse';
+
+    # allow filenames to work
+    if( ( ref $xml && ref $xml ne 'SCALAR' )
+      || $xml !~ m{<.*?>}s ) {
+        $parse_method = 'parsefile';
+    }
+
     my $parser = new XML::Parser(Style => 'Tree');
-    eval { $parser->parse($xml); };
+    eval { $parser->$parse_method($xml); };
 
  
     my $not_ok = $@;
 
-	if ($not_ok){
+	if( $not_ok ){
         ( my $message = $not_ok ) =~ s/ at (?!line).*//g;   # ick!
         $message =~ s/^\n//g;
         #chomp $message;
-		$Test->diag("Failed to parse \n$xml\nXML::Parser error was: $message\n");
         $Test->ok(0, $name);
+		$Test->diag("Failed to parse \n$xml\nXML::Parser error was: $message\n");
 	}else{
         my $test  = XMLin( $xml ); 
-        cmp_deeply( $test, $expected, $name );
+        my ($ok, $stack) = Test::Deep::cmp_details($test, $expected);
+        if( not $Test->ok($ok, $name) ){
+            my $diag = deep_diag($stack);
+            $Test->diag($diag);
+        }
     }
 }
 
@@ -157,9 +159,6 @@ L<http://search.cpan.org/dist/Test-XML-Deep>
 =back
 
 
-=head1 ACKNOWLEDGEMENTS
-
-
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2009 Jeff Lavallee, all rights reserved.
@@ -169,7 +168,7 @@ under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<Test::XML::Simple>
+L<Test::XML::Simple>, L<Test::Deep>
 
 
 =cut

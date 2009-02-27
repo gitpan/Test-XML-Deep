@@ -1,0 +1,38 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 dcb5d2aae87827e1796409c4d845309b0b629293 Build.PL
+SHA1 14824302fc956f8d7934189f3de60d7cee77b705 Changes
+SHA1 3b2be60f599f5458d9e5aaae2c5f600344b317b1 MANIFEST
+SHA1 dc478c63bc3c012b357552f7f7080383c84bbf08 META.yml
+SHA1 d382882af473bf51e06dc32b70525462571c5478 Makefile.PL
+SHA1 ee4c6256d6aebba39827dcf56a7cd2a021df91d6 README
+SHA1 3fff073e883ec98888c2ff3147c19d693912424c lib/Test/XML/Deep.pm
+SHA1 4070d8b161edfeac3d51fb27bcc57df75e155378 t/00-load.t
+SHA1 7a2bb1e22537edbbb7c982973887c9358b513aa5 t/01-basic.t
+SHA1 48ad25193027f0bcaec2b19a18de6cd5aa6f8f3f t/02-bad_xml.t
+SHA1 a177f5db47d6c62e40388cf238f6cfb28b874f3a t/03-no_match.t
+SHA1 25fd26e35f511fc7fb8aa662798be7bbe8a2c36b t/04-files.t
+SHA1 ab9d351301eb7da52f272cd025445b2e0b6eb463 t/boilerplate.t
+SHA1 9e9f591e964af2c8167fa7e8052e400102c95f70 t/example.xml
+SHA1 0b1c5a2d59be6bfa7d60c64cd964fea6a0331705 t/pod-coverage.t
+SHA1 640935336dc1123c0069bcf5432bcaedc2cf22d3 t/pod.t
+-----BEGIN PGP SIGNATURE-----
+
+iEYEARECAAYFAkmncm4ACgkQAfBzCes16cjMPgCdHNWC7N6hYcAsXLmYWSfxDr+S
+ioUAoMPgu9sOarqZiRSw7AEav6seZC2+
+=6gfY
+-----END PGP SIGNATURE-----
