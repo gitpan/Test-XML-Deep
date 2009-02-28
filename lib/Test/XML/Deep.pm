@@ -6,7 +6,6 @@ use strict;
 use Exporter;
 use XML::Parser;
 use XML::Simple;
-use Sub::Uplevel qw/uplevel/;
 use Test::Deep qw/deep_diag/;
 
 my $Test = Test::Builder->new;
@@ -21,11 +20,11 @@ Test::XML::Deep = XML::Simple + Test::Deep
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 =head1 SYNOPSIS
