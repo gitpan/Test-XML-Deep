@@ -3,14 +3,13 @@ package Test::XML::Deep;
 use warnings;
 use strict;
 
-use Exporter;
+use base 'Test::Builder::Module';
+
 use XML::Parser;
 use XML::Simple;
-use Test::Deep qw/deep_diag/;
+use Test::Deep qw/deep_diag cmp_details/;
 
-my $Test = Test::Builder->new;
-
-use base qw/Exporter/;
+my $Builder = __PACKAGE__->builder;
 
 our @EXPORT = qw/ cmp_xml_deeply /;
 
@@ -20,11 +19,11 @@ Test::XML::Deep = XML::Simple + Test::Deep
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 =head1 SYNOPSIS
@@ -80,6 +79,12 @@ cmp_xml_deeply
 
 =head2 cmp_xml_deeply( $xml, $hashref_expected, [ 'test name' ] );
 
+$xml is a filename or string of XML that you'd like to test.
+
+$hashref_expected should be the expected value of the XML as it would be parsed by XML::Simple.
+
+An optional test name is accepted as the third parameter.
+
 =cut
 
 sub cmp_xml_deeply {
@@ -103,19 +108,27 @@ sub cmp_xml_deeply {
         ( my $message = $not_ok ) =~ s/ at (?!line).*//g;   # ick!
         $message =~ s/^\n//g;
         #chomp $message;
-        $Test->ok(0, $name);
-		$Test->diag("Failed to parse \n$xml\nXML::Parser error was: $message\n");
+        $Builder->ok(0, $name);
+		$Builder->diag("Failed to parse \n$xml\nXML::Parser error was: $message\n");
 	}else{
         my $test  = XMLin( $xml ); 
-        my ($ok, $stack) = Test::Deep::cmp_details($test, $expected);
-        if( not $Test->ok($ok, $name) ){
+        my ($ok, $stack) = cmp_details($test, $expected);
+        if( not $Builder->ok($ok, $name) ){
             my $diag = deep_diag($stack);
-            $Test->diag($diag);
+            $Builder->diag($diag);
         }
     }
 }
 
+=head1 ACKNOWLEDGEMENTS
 
+Fergal Daly, for exporting cmp_details from Test::Deep lickety-split!
+
+Michael G Schwern, for L<Test::Builder>, which makes modules like this possible.
+
+=head1 SOURCE
+
+see: L<http://github.com/jlavallee/test-xml-deep>
 
 =head1 AUTHOR
 
@@ -173,3 +186,4 @@ L<Test::XML::Simple>, L<Test::Deep>
 =cut
 
 1; # End of Test::XML::Deep
+
